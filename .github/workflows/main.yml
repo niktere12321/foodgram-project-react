@@ -4,7 +4,7 @@ on: [push]
 
 jobs: 
   tests:
-    name: pep8 check
+    name: pep8 check and test
     runs-on: ubuntu-latest
     environment: yamdb_env
     steps:
