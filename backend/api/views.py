@@ -79,7 +79,6 @@ class FoodUserViewSet(UserViewSet):
                     {'status': 'Вы успешно отписались от пользователя'},
                     status=status.HTTP_200_OK,
                 )
-
             return Response(
                 {'errors': 'Вы не подписаны на данного пользователя'},
                 status=status.HTTP_400_BAD_REQUEST,
