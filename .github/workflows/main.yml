@@ -40,10 +40,10 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2 
         with:
-          context: api_yamdb
+          context: backend
           push: true
           tags: niktere/niktere:v1
-          file: api_yamdb/Dockerfile
+          file: backend/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
