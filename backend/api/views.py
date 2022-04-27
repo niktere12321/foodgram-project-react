@@ -64,7 +64,6 @@ class FoodUserViewSet(UserViewSet):
             )
             serializer = FollowSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         if request.method == 'DELETE':
             if self.request.user.id == author:
                 return Response(
@@ -131,7 +130,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe.save()
             serializer = FavoriteSerializer(new_recipe)
             return Response(serializer.data)
-
         if request.method == 'DELETE':
             recipe = Favorite.objects.get(
                 recipe_id=id, user_id=self.request.user.id
@@ -172,7 +170,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe.save()
             serializer = FavoriteSerializer(new_recipe)
             return Response(serializer.data)
-
         if request.method == 'DELETE':
             recipe = Favorite.objects.get(
                 recipe_id=id, user_id=self.request.user.id

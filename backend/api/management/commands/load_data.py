@@ -23,8 +23,8 @@ class Command(BaseCommand):
                 data = json.load(f)
                 for ingredient in data:
                     Ingredient.objects.update_or_create(
-                            name=ingredient['name'],
-                            measurement_unit=ingredient['measurement_unit'],
-                        )
+                        name=ingredient['name'],
+                        measurement_unit=ingredient['measurement_unit'],
+                    )
         except FileNotFoundError:
             raise CommandError('Возникла ошибка')
