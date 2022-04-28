@@ -192,34 +192,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path='download_shopping_cart',
     )
     def get_shopping_cart(self, request):
-        recipes = Recipe.objects.filter(
-            favorite__user=self.request.user, favorite__shopping_cart=True
-        ).all()
-        if not recipes:
+        ingredients = IngredientInRecipe.objects.filter(
+            recipe__purchases__user=request.user
+        ).values('amount', 'name', 'measurement_unit')
+        data = dict()
+        if not ingredients:
             raise ValidationError(
                 detail={'error': ['Ваш список покупок пуст :(']}
             )
-        data = dict()
-        for recipe in recipes:
-            ingredients = IngredientInRecipe.objects.filter(
-                recipe=recipe
-            ).all()
-            for ingredient in ingredients:
-                if f'{ingredient.ingredient.id}' in data:
-                    data[f'{ingredient.ingredient.id}'][
-                        'amount'
-                    ] += ingredient.amount
-                else:
-                    data.update(
-                        {
-                            f'{ingredient.ingredient.id}': {
-                                'name': ingredient.ingredient.name,
-                                'measurement_unit':
-                                    ingredient.ingredient.measurement_unit,
-                                'amount': ingredient.amount,
-                            }
+        for ingredient in ingredients:
+            if f'{ingredient.ingredient.id}' in data:
+                data[f'{ingredient.ingredient.id}'][
+                    'amount'
+                ] += ingredient.amount
+            else:
+                data.update(
+                    {
+                        f'{ingredient.ingredient.id}': {
+                            'name': ingredient.ingredient.name,
+                            'measurement_unit':
+                                ingredient.ingredient.measurement_unit,
+                            'amount': ingredient.amount,
                         }
-                    )
+                    }
+                )
         data = dict(sorted(data.items(), key=lambda item: item[1]['name']))
         return pdf(data)
 
