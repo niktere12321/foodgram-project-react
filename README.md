@@ -1,5 +1,5 @@
 # Проект Foodgram
-![food workflow](https://github.com/niktere12321/foodgram-project-react/actions/workflows/main.yml.yml/badge.svg)
+[![food workflow](https://github.com/niktere12321/foodgram-project-react/actions/workflows/main.yml/badge.svg)](https://github.com/niktere12321/foodgram-project-react/actions/workflows/main.yml)
 Проект доступен по ссылке:
 [http://51.250.10.161/recipes](http://51.250.10.161/recipes)
 
@@ -23,7 +23,7 @@ python -m venv env
 ```
 
 ```bash
-source env/bin/activate
+source venv/Scripts/activate
 ```
 
 * Cоздайте файл `.env` в директории `/infra/` с содержанием:
