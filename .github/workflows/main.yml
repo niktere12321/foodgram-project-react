@@ -6,7 +6,7 @@ jobs:
   tests:
     name: pep8 check and test
     runs-on: ubuntu-latest
-    environment: yamdb_env
+    environment: foodgram
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
