@@ -10,7 +10,7 @@ SECRET_KEY = 'dmjm#rmx9rtg#k!8cms*r)7@+7n(%(^pgf=vq40vng!0we@d&u'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['51.250.10.161']
+ALLOWED_HOSTS = ['51.250.10.161', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'colorfield',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
@@ -26,7 +27,6 @@ INSTALLED_APPS = [
     'recipe.apps.RecipeConfig',
     'api.apps.ApiConfig',
     'django_filters',
-    'colorfield',
 ]
 
 MIDDLEWARE = [
@@ -61,12 +61,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.getenv('DB_HOST', default='db'),
-        'PORT': os.getenv('DB_PORT', default='5432')
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': os.getenv('DB_NAME', default='sqlite3'),
+        'USER': os.getenv('POSTGRES_USER', default=''),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default=''),
+        'HOST': os.getenv('DB_HOST', default=''),
+        'PORT': os.getenv('DB_PORT', default='')
     }
 }
 
@@ -85,7 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
 

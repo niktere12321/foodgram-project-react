@@ -72,6 +72,10 @@ docker-compose up -d --build
   > 4. контейнер фронтэнда **frontend**
 * Примените миграции:
 ```bash
+sudo docker compose exec backend python manage.py makemigrations users
+sudo docker compose exec backend python manage.py migrate users
+sudo docker compose exec backend python manage.py makemigrations recipe
+sudo docker compose exec backend python manage.py migrate recipe
 sudo docker compose exec backend python manage.py migrate
 ```
 * Загрузите ингредиенты:
