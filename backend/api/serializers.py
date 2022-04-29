@@ -146,7 +146,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredient_list = []
         for ingredient_item in ingredients:
             amount = ingredient_item['amount']
-            if int(amount) <= 0:
+            if int(amount) <= 1:
                 raise serializers.ValidationError({
                     'amount': 'Количество ингредиента должно быть больше нуля!'
                 })
