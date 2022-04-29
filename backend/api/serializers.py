@@ -4,7 +4,6 @@ from drf_extra_fields.fields import Base64ImageField
 from recipe.models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueValidator
 from users.models import Follow, User
 
@@ -215,7 +214,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 ingredients_id=ingredient.get('id'),
                 amount=ingredient.get('amount'))
         return instance
-        
+
     def update(self, instance, validated_data):
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
