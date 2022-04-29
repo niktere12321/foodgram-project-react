@@ -24,7 +24,7 @@ services:
   frontend:
     image: niktere/front:v1
     volumes:
-      - ../frontend/:/app/result_build/
+      - result_build:/app/result_build/build/
     depends_on:
       - backend
 
