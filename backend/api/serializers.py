@@ -138,32 +138,45 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
     def validate(self, data):
-        ingredients = self.initial_data.get('ingredients')
-        if not ingredients:
-            raise serializers.ValidationError(
-                {'error': 'Необходим хотя бы 1 ингредиент'}
-            )
-        ingredient_list = []
-        for ingredient_item in ingredients:
-            amount = ingredient_item['amount']
-            if int(amount) <= 1:
-                raise serializers.ValidationError({
-                    'amount': 'Количество ингредиента должно быть больше нуля!'
-                })
-            ingredient = get_object_or_404(
-                Ingredient, id=ingredient_item['id']
-            )
-            if ingredient in ingredient_list:
+        ingredients = data.get('ingredients')
+        ingredients_set = set()
+        for ingredient in ingredients:
+            if len(data['tags']) == 0:
                 raise serializers.ValidationError(
-                    'Ингридиенты должны быть уникальными'
+                    'Минимальное количество тегов: 1'
                 )
-            ingredient_list.append(ingredient)
-
+            if len(data['tags']) > len(set(data['tags'])):
+                raise serializers.ValidationError(
+                    'Повторяющиеся теги недопустимы'
+                )
+            if type(ingredient.get('amount')) is str:
+                if not ingredient.get('amount').isdigit():
+                    raise serializers.ValidationError(
+                        ('Количество ингредиента должно быть числом')
+                    )
+            if int(ingredient.get('amount')) <= 0:
+                raise serializers.ValidationError(
+                    ('Минимальное количество ингридиентов 1')
+                )
+            if type(data['cooking_time']) is str:
+                if not ingredient.get('cooking_time').isdigit():
+                    raise serializers.ValidationError(
+                        ('Количество минут должно быть числом')
+                    )
+            if int(data['cooking_time']) <= 0:
+                raise serializers.ValidationError(
+                    'Время готовки должно быть > 0 '
+                )
+            ingredient_id = ingredient.get('id')
+            if ingredient_id in ingredients_set:
+                raise serializers.ValidationError(
+                    'Ингредиент не должен повторяться.'
+                )
+            ingredients_set.add(ingredient_id)
         data['ingredients'] = ingredients
         return data
 
     def create(self, validated_data):
-
         ingredients_data = validated_data.pop('ingredients')
         tag_ids = Tag.objects.all().values_list('id', flat=True)
         tag_id = self.context.get('request').data['tags']
@@ -173,9 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     detail={'tags': ['Такого тэга не существует :(']}
                 )
-
         recipe = super(RecipeSerializer, self).create(validated_data)
-
         for ingredient in ingredients_data:
             try:
                 get_ingredient = Ingredient.objects.get(id=ingredient['id'])
@@ -190,8 +201,32 @@ class RecipeSerializer(serializers.ModelSerializer):
                         'ingredients': ['Такого ингредиента не существует :(']
                     }
                 )
-
         return recipe
+
+    def add_tags_ingredients(self, instance, **validated_data):
+        ingredients = validated_data['ingredients']
+        tags = validated_data['tags']
+        for tag in tags:
+            instance.tags.add(tag)
+
+        for ingredient in ingredients:
+            IngredientInRecipe.objects.create(
+                recipe=instance,
+                ingredients_id=ingredient.get('id'),
+                amount=ingredient.get('amount'))
+        return instance
+        
+    def update(self, instance, validated_data):
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time
+        )
+        instance.ingredients.clear()
+        instance.tags.clear()
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        instance = self.add_tags_ingredients(
+            instance, ingredients=ingredients, tags=tags)
+        return super().update(instance, validated_data)
 
 
 class FollowSerializer(serializers.ModelSerializer):
