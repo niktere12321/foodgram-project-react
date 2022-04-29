@@ -172,6 +172,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe = super(RecipeSerializer, self).create(validated_data)
 
         for ingredient in ingredients_data:
+            amount = ingredient['amount']
+            if int(amount) <= 0:
+                raise serializers.ValidationError({
+                    'amount': 'Количество ингредиента должно быть больше нуля!'
+                })
             try:
                 get_ingredient = Ingredient.objects.get(id=ingredient['id'])
                 IngredientInRecipe.objects.update_or_create(
