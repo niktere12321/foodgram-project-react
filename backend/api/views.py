@@ -219,22 +219,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         data = dict(sorted(data.items(), key=lambda item: item[1]['name']))
         return pdf(data)
 
-    def perform_create(self, serializer):
-        if 'tags' not in self.request.data:
-            raise ValidationError(
-                detail={'tags': ['Это поле обязательно к заполнению']}
-            )
-        tag_id = self.request.data['tags']
-        author = self.request.user
-        serializer.save(author=author, tags=tag_id)
-
-    def perform_update(self, serializer):
-        if 'tags' not in self.request.data:
-            raise ValidationError(
-                detail={'tags': ['Это поле обязательно к заполнению']}
-            )
-        tag_id = self.request.data['tags']
-        serializer.save(tags=tag_id)
+    @staticmethod
+    def post_method_for_actions(request, pk, serializers):
+        data = {'user': request.user.id, 'recipe': pk}
+        serializer = serializers(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
         instance.delete()
