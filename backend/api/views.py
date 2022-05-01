@@ -195,11 +195,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = IngredientInRecipe.objects.filter(
             recipe__favorite__user=request.user,
             recipe__favorite__shopping_cart=True
-            ).values_list('amount',
-                          'ingredient__pk',
-                          'ingredient__name',
-                          'ingredient__measurement_unit'
-                          )
+        ).values_list('amount',
+                      'ingredient__pk',
+                      'ingredient__name',
+                      'ingredient__measurement_unit'
+                      )
         data = dict()
         if not ingredients:
             raise ValidationError(
