@@ -17,7 +17,7 @@ def pdf(data: Dict[int, Dict[str, Union[str, int]]]) -> FileResponse:
 
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
-    rl_config.TTFSearchPath.append(str(settings.BASE_DIR) + '/utils/fonts')
+    rl_config.TTFSearchPath.append(str(settings.BASE_DIR) + '/api/fonts')
     pdfmetrics.registerFont(TTFont('FreeSans', 'FreeSans.ttf'))
     p.setFont('FreeSans', 15, leading=None)
     p.setFillColorRGB(0.29296875, 0.453125, 0.609375)

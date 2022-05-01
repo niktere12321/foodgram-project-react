@@ -193,26 +193,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def get_shopping_cart(self, request):
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__name=request.user
-        ).values('amount', 'name', 'measurement_unit')
+            recipe__favorite__user=request.user,
+            recipe__favorite__shopping_cart=True
+            ).values_list('amount',
+                          'ingredient__pk',
+                          'ingredient__name',
+                          'ingredient__measurement_unit'
+                          )
         data = dict()
         if not ingredients:
             raise ValidationError(
                 detail={'error': ['Ваш список покупок пуст :(']}
             )
         for ingredient in ingredients:
-            if f'{ingredient.ingredient.id}' in data:
-                data[f'{ingredient.ingredient.id}'][
+            pk_number = ingredient[1]
+            if pk_number in data:
+                data[pk_number][
                     'amount'
-                ] += ingredient.amount
+                ] += ingredient[0]
             else:
                 data.update(
                     {
-                        f'{ingredient.ingredient.id}': {
-                            'name': ingredient.ingredient.name,
+                        pk_number: {
+                            'name': ingredient[2],
                             'measurement_unit':
-                                ingredient.ingredient.measurement_unit,
-                            'amount': ingredient.amount,
+                                ingredient[3],
+                            'amount': ingredient[0],
                         }
                     }
                 )
