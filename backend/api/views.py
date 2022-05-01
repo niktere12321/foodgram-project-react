@@ -193,7 +193,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def get_shopping_cart(self, request):
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__user=request.user
+            recipe__name=request.user
         ).values('amount', 'name', 'measurement_unit')
         data = dict()
         if not ingredients:
