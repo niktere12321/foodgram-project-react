@@ -93,7 +93,7 @@ sudo docker compose exec backend python manage.py collectstatic --noinput
 
 ## Документация к API
 API документация доступна по ссылке (создана с помощью redoc):
-[http://51.250.10.161/api/docs/](http://51.250.10.161/api/docs/)
+[http://51.250.10.161/api/docs/redoc.html](http://51.250.10.161/api/docs/redoc.html)
 
 Автор
 Nikita Terekhov
