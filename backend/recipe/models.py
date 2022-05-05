@@ -1,6 +1,7 @@
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from foodgram import settings
 
 
@@ -11,7 +12,7 @@ class Tag(models.Model):
     color = ColorField(
         format='hex', unique=True, verbose_name='Цвет'
     )
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         ordering = ['-id']

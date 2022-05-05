@@ -1,5 +1,4 @@
 from djoser.views import UserViewSet
-from recipe.models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -7,21 +6,22 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from users.models import Follow, User
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.paginations import MyPagination
+from api.paginations import PagePagination
 from api.permissions import IsAuthor
 from api.serializers import (FavoriteSerializer, FollowSerializer,
                              FoodUserSerializer, IngredientSerializer,
                              RecipeSerializer, TagSerializer)
 from api.utils import pdf
+from recipe.models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
+from users.models import Follow, User
 
 
 class FoodUserViewSet(UserViewSet):
     serializer_class = FoodUserSerializer
     queryset = User.objects.all()
-    pagination_class = MyPagination
+    pagination_class = PagePagination
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
@@ -100,7 +100,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthor]
-    pagination_class = MyPagination
+    pagination_class = PagePagination
     filterset_class = RecipeFilter
 
     @action(

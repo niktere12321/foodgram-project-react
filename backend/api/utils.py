@@ -24,21 +24,21 @@ def pdf(data: Dict[int, Dict[str, Union[str, int]]]) -> FileResponse:
     p.drawString(260, 800, TITLE)
     p.line(0, 780, 1000, 780)
     p.line(0, 778, 1000, 778)
-    x1 = 50
-    y1 = 750
-    o = 1
+    coordinate_x = 50
+    coordinate_y = 750
+    counter = 1
     for v in data.values():
         p.setFont('FreeSans', 15, leading=None)
-        p.rect(x1 - 20, y1 - 12, 13, 13, fill=0)
+        p.rect(coordinate_x - 20, coordinate_y - 12, 13, 13, fill=0)
         p.drawString(
-            x1,
-            y1 - 12,
-            f"{o}. {v['name']} ({v['measurement_unit']}) - {v['amount']}"
+            coordinate_x,
+            coordinate_y - 12,
+            f"{counter}. {v['name']} ({v['measurement_unit']}) - {v['amount']}"
         )
-        y1 = y1 - 30
-        o += 1
-        if y1 == 30:
-            y1 = 750
+        coordinate_y = coordinate_y - 30
+        counter += 1
+        if coordinate_y == 30:
+            coordinate_y = 750
             p.showPage()
             p.setFont('FreeSans', 15, leading=None)
             p.setFillColorRGB(0.29296875, 0.453125, 0.609375)

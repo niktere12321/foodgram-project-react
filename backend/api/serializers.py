@@ -1,9 +1,10 @@
 from django.db.models import F
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipe.models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
+from recipe.models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Follow, User
 
 
@@ -16,14 +17,7 @@ class FoodUserCreateSerializer(UserCreateSerializer):
     )
 
     class Meta:
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'password',
-        )
+        fields = '__all__'
         model = User
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -32,21 +26,12 @@ class FoodUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-        )
+        fields = '__all__'
         model = User
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Follow.objects.filter(
+        return not user.is_anonymous and Follow.objects.filter(
             author_id=obj.id, user_id=user.id
         ).exists()
 
@@ -90,18 +75,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
-        fields = (
-            'id',
-            'tags',
-            'author',
-            'ingredients',
-            'is_favorited',
-            'is_in_shopping_cart',
-            'name',
-            'image',
-            'text',
-            'cooking_time',
-        )
+        fields = '__all__'
         model = Recipe
 
     def get_ingredients(self, obj):
@@ -115,25 +89,17 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
         recipe = Favorite.objects.filter(
             recipe_id=obj.id, user_id=user.id
         ).first()
-        if recipe:
-            return recipe.favorite
-        return False
+        return not user.is_anonymous and not recipe and recipe.favorite
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
         recipe = Favorite.objects.filter(
             recipe_id=obj.id, user_id=user.id
         ).first()
-        if recipe:
-            return recipe.shopping_cart
-        return False
+        return not user.is_anonymous and not recipe and recipe.shopping_cart
 
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
@@ -224,21 +190,19 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Follow.objects.filter(
+        return not user.is_anonymous and Follow.objects.filter(
             author_id=obj.id, user_id=user.id
         ).exists()
 
     def get_recipes(self, obj):
-        try:
+        if self.context.GET['recipes_limit'] is not None:
             count = int(self.context.GET['recipes_limit'])
             recipes = (
                 Recipe.objects.filter(author_id=obj.id)
                 .all()
                 .prefetch_related(count)
             )
-        except AttributeError:
+        else:
             recipes = Recipe.objects.filter(author_id=obj.id).all()
         return FavoriteSerializer(recipes, many=True).data
 

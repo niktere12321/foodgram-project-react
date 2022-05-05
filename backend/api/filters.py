@@ -1,5 +1,6 @@
 import django_filters
 from django_filters.rest_framework import filters
+
 from recipe.models import Ingredient, Recipe, Tag
 from users.models import User
 
@@ -18,6 +19,11 @@ class RecipeFilter(django_filters.FilterSet):
         field_name='favorite__shopping_cart', method='filter_favorite'
     )
 
+
+    class Meta:
+        model = Recipe
+        fields = ['author', 'tags']
+
     def filter_favorite(self, queryset, name, value):
         if value:
             return queryset.filter(
@@ -27,10 +33,6 @@ class RecipeFilter(django_filters.FilterSet):
         return queryset.exclude(
             favorite__user=self.request.user, **{name: True}
         ).all()
-
-    class Meta:
-        model = Recipe
-        fields = ['author', 'tags']
 
 
 class IngredientFilter(django_filters.FilterSet):
