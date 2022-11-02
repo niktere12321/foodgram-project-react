@@ -1,7 +1,5 @@
 # Проект Foodgram
 [![food workflow](https://github.com/niktere12321/foodgram-project-react/actions/workflows/main.yml/badge.svg)](https://github.com/niktere12321/foodgram-project-react/actions/workflows/main.yml)
-Проект доступен по ссылке:
-[http://51.250.10.161/recipes](http://51.250.10.161/recipes)
 
 ## Описание проекта
 
@@ -13,6 +11,8 @@ Foodgram это ресурс для публикации рецептов.
 * Склонировать репозиторий на локальную машину:
 ```bash
 git clone https://github.com/niktere12321/foodgram-project-react.git
+```
+```bash
 cd foodgram-project-react
 ```
 
@@ -41,6 +41,11 @@ DB_PORT=5432
 
 ```bash
 cd backend/
+```
+```bash
+python3 -m pip install --upgrade pip
+```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -91,7 +96,22 @@ sudo docker compose exec backend python manage.py createsuperuser
 sudo docker compose exec backend python manage.py collectstatic --noinput
 ```
 
-Автор
-Nikita Terekhov
+---
+## Техническая информация
 
-Для проверки админки email:nik@lol.lol username:nik password:lol
+Стек технологий: Python 3, Django, Django Rest, React, Docker, PostgreSQL, nginx, gunicorn, Djoser.
+
+Веб-сервер: nginx (контейнер nginx)  
+Frontend фреймворк: React (контейнер frontend)  
+Backend фреймворк: Django (контейнер backend)  
+API фреймворк: Django REST (контейнер backend)  
+База данных: PostgreSQL (контейнер db)
+
+Веб-сервер nginx перенаправляет запросы клиентов к контейнерам frontend и backend, либо к хранилищам (volume) статики и файлов.  
+Контейнер nginx взаимодействует с контейнером backend через gunicorn.  
+Контейнер frontend взаимодействует с контейнером backend посредством API-запросов.
+
+---
+## Об авторе
+
+Терехов Никита Алексеевич
